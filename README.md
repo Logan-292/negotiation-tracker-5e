@@ -5,6 +5,6 @@
 Пороги успеха (по умолчанию 10 / 15) меняются в настройках модуля. В окне можно вести несколько параллельных разговоров, в каждом — несколько НПС с отдельными шкалами и мотивациями.
 
 ## Установка через Foundry
-https://raw.githubusercontent.com/Logan-292/negotiation-tracker-5e/refs/heads/main/module.json
+https://github.com/Logan-292/negotiation-tracker-5e/releases/latest/download/module.json
 ## Благодарности
 Правила переговоров основаны на системе Draw Steel (MCDM Productions). Модуль неофициальный и не связан с MCDM.
