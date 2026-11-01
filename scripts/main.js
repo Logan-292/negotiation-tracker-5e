@@ -1,5 +1,4 @@
-scripts/main.js
-  import {
+ import {
   MOTIVATION_KEYS, STARTING_ATTITUDES, clamp, tierOf, resolve, statusOf, startStats
 } from "./rules.js";
 
