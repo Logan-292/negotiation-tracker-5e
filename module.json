@@ -1,0 +1,45 @@
+{
+  "id": "negotiation-tracker-5e",
+  "title": "Negotiation Tracker 5e",
+  "description": "Interest / Patience / Motivations / Pitfalls negotiation tracker for D&D 5e, adapted from the Draw Steel negotiation rules. Rolls Persuasion, Intimidation, Insight and Deception straight from the dnd5e system.",
+  "version": "1.2.0",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "14"
+  },
+  "relationships": {
+    "systems": [
+      {
+        "id": "dnd5e",
+        "type": "system",
+        "compatibility": {
+          "minimum": "5.0.0"
+        }
+      }
+    ]
+  },
+  "esmodules": [
+    "scripts/main.js"
+  ],
+  "styles": [
+    "styles/negotiation.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "ru",
+      "name": "Русский",
+      "path": "lang/ru.json"
+    }
+  ],
+  "authors": [
+    {
+      "name": "Negotiation Tracker 5e"
+    }
+  ],
+  "socket": true
+}

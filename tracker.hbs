@@ -1,0 +1,208 @@
+<div class="nt5e">
+
+  {{!-- Разговоры --}}
+  <nav class="nt5e-tabs nt5e-convs">
+    {{#each convs}}
+    <span class="nt5e-tab {{#if active}}active{{/if}}">
+      <button type="button" data-action="selectConv" data-id="{{id}}">{{name}}</button>
+      <a data-action="removeConv" data-id="{{id}}" title="{{localize 'NT5E.RemoveConv'}}"><i class="fa-solid fa-xmark"></i></a>
+    </span>
+    {{/each}}
+    <button type="button" class="nt5e-add" data-action="addConv" title="{{localize 'NT5E.AddConv'}}"><i class="fa-solid fa-plus"></i> {{localize "NT5E.Conversation"}}</button>
+  </nav>
+
+  <header class="nt5e-conv-head">
+    <label class="nt5e-grow">{{localize "NT5E.ConvName"}}
+      <input type="text" name="convName" value="{{conv.name}}" placeholder="{{localize 'NT5E.ConvNameHint'}}">
+    </label>
+  </header>
+
+  {{!-- НПС в разговоре --}}
+  <nav class="nt5e-tabs nt5e-npcs">
+    {{#each npcs}}
+    <span class="nt5e-tab nt5e-npc-tab nt5e-st-{{status}} {{#if active}}active{{/if}}">
+      <button type="button" data-action="selectNpc" data-id="{{id}}">
+        {{name}}
+        {{#if started}}<small>●{{interest}} ■{{patience}}</small>{{/if}}
+      </button>
+      <a data-action="removeNpc" data-id="{{id}}" title="{{localize 'NT5E.RemoveNpc'}}"><i class="fa-solid fa-xmark"></i></a>
+    </span>
+    {{/each}}
+    <button type="button" class="nt5e-add" data-action="addNpc" title="{{localize 'NT5E.AddNpc'}}"><i class="fa-solid fa-user-plus"></i> {{localize "NT5E.Npc"}}</button>
+  </nav>
+
+  <header class="nt5e-head">
+    <input type="text" name="npcName" value="{{npc.name}}" placeholder="{{localize 'NT5E.NpcName'}}">
+    <span class="nt5e-status nt5e-status-{{npc.status}}">{{statusLabel}}</span>
+  </header>
+
+  {{#if idle}}
+  <section class="nt5e-setup">
+    <h4>{{localize "NT5E.Setup"}}</h4>
+    <div class="nt5e-setup-row">
+      <label>{{localize "NT5E.StartingAttitude"}}
+        <select data-setup="attitude">
+          {{#each attitudes}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+        </select>
+      </label>
+      <label>{{localize "NT5E.Language"}}
+        <select data-setup="language">
+          <option value="0" {{#if (eq npc.setup.language "0")}}selected{{/if}}>{{localize "NT5E.Language0"}}</option>
+          <option value="1" {{#if (eq npc.setup.language "1")}}selected{{/if}}>{{localize "NT5E.Language1"}}</option>
+          <option value="3" {{#if (eq npc.setup.language "3")}}selected{{/if}}>{{localize "NT5E.Language3"}}</option>
+        </select>
+      </label>
+      <label>{{localize "NT5E.Fame"}}
+        <select data-setup="fame">
+          <option value="none" {{#if (eq npc.setup.fame "none")}}selected{{/if}}>—</option>
+          <option value="famous" {{#if (eq npc.setup.fame "famous")}}selected{{/if}}>{{localize "NT5E.Famous"}}</option>
+          <option value="infamous" {{#if (eq npc.setup.fame "infamous")}}selected{{/if}}>{{localize "NT5E.Infamous"}}</option>
+        </select>
+      </label>
+      <button type="button" class="nt5e-primary" data-action="start"><i class="fa-solid fa-play"></i> {{localize "NT5E.Start"}}</button>
+    </div>
+    <p class="nt5e-hint">{{localize "NT5E.SetupHint"}}</p>
+  </section>
+  {{/if}}
+
+  <div class="nt5e-grid">
+
+    <section class="nt5e-col">
+      <h4>● {{localize "NT5E.Interest"}}</h4>
+      <div class="nt5e-ladder">
+        {{#each interestLadder}}
+        <button type="button" class="{{#if active}}active{{/if}}" data-action="setStat" data-stat="interest" data-value="{{value}}">
+          <b>{{value}}</b><span>{{label}}</span>
+        </button>
+        {{/each}}
+      </div>
+    </section>
+
+    <section class="nt5e-col nt5e-col-narrow">
+      <h4>■ {{localize "NT5E.Patience"}}</h4>
+      <div class="nt5e-ladder">
+        {{#each patienceLadder}}
+        <button type="button" class="{{#if active}}active{{/if}}" data-action="setStat" data-stat="patience" data-value="{{value}}">
+          <b>{{value}}</b>
+        </button>
+        {{/each}}
+      </div>
+    </section>
+
+    <section class="nt5e-col nt5e-col-wide">
+      <div class="nt5e-rows-head">
+        <span>{{localize "NT5E.MotivationCol"}}</span><span></span><span>{{localize "NT5E.PitfallCol"}}</span>
+      </div>
+      {{#each rows}}
+      <div class="nt5e-row {{#if used}}used{{/if}}">
+        <button type="button" class="nt5e-pip {{#if isMotivation}}on-m{{/if}}" data-action="toggleRole" data-role="motivation" data-index="{{index}}" title="{{localize 'NT5E.IsMotivation'}}">■</button>
+        <span class="nt5e-name">
+          {{#if custom}}
+            <input type="text" value="{{label}}" data-custom-label="{{index}}" placeholder="…">
+          {{else}}
+            {{name}}
+          {{/if}}
+          {{#if isMotivation}}<a data-action="toggleUsed" data-index="{{index}}" title="{{localize 'NT5E.ToggleUsed'}}"><i class="fa-solid {{#if used}}fa-check-double{{else}}fa-check{{/if}}"></i></a>{{/if}}
+          {{#unless (eq role "none")}}<a data-action="toggleKnown" data-index="{{index}}" title="{{localize 'NT5E.ToggleKnown'}}"><i class="fa-solid {{#if known}}fa-eye{{else}}fa-eye-slash{{/if}}"></i></a>{{/unless}}
+        </span>
+        <button type="button" class="nt5e-pip {{#if isPitfall}}on-p{{/if}}" data-action="toggleRole" data-role="pitfall" data-index="{{index}}" title="{{localize 'NT5E.IsPitfall'}}">■</button>
+      </div>
+      {{/each}}
+      <p class="nt5e-hint">▲ {{localize "NT5E.OnceHint"}}</p>
+    </section>
+
+  </div>
+
+  {{#if finalNote}}<p class="nt5e-banner">{{finalNote}} {{offerText}}</p>{{else}}{{#unless idle}}<p class="nt5e-offer"><b>{{localize "NT5E.CurrentOffer"}}:</b> {{offerText}}</p>{{/unless}}{{/if}}
+
+  <button type="button" class="nt5e-accept" data-action="acceptOffer" {{#if idle}}disabled{{/if}}>
+    <i class="fa-solid fa-handshake"></i> {{localize "NT5E.AcceptOffer"}} — {{npc.name}}
+  </button>
+
+  {{!-- Аргументы на весь разговор --}}
+  <section class="nt5e-actions">
+    <div class="nt5e-actor-row"><span class="nt5e-dc">{{localize "NT5E.DCLine" success=dc.success great=dc.great}}</span></div>
+
+    <fieldset {{#if disabled}}disabled{{/if}}>
+      <legend>{{localize "NT5E.MakeArgument"}}</legend>
+
+      <p class="nt5e-hint">{{localize "NT5E.TargetsHint"}}</p>
+      <div class="nt5e-targets">
+        {{#each targets}}
+        <div class="nt5e-target {{#unless active}}inactive{{/unless}}">
+          <label class="nt5e-check nt5e-target-name">
+            <input type="checkbox" data-target data-npc-id="{{id}}" data-field="on" {{#if on}}checked{{/if}} {{#unless active}}disabled{{/unless}}>
+            <b>{{name}}</b>
+          </label>
+          <select data-target data-npc-id="{{id}}" data-field="row" {{#unless active}}disabled{{/unless}}>
+            <option value="none" {{#if noneSelected}}selected{{/if}}>{{localize "NT5E.Neither"}}</option>
+            {{#each options}}
+            <option value="{{index}}" {{#if selected}}selected{{/if}}>{{name}}{{#if isPitfall}} ▲{{/if}}{{#if used}} ✓{{/if}}</option>
+            {{/each}}
+          </select>
+          <label class="nt5e-check"><input type="checkbox" data-target data-npc-id="{{id}}" data-field="lie" {{#if lie}}checked{{/if}} {{#unless active}}disabled{{/unless}}> {{localize "NT5E.Lie"}}</label>
+          <label class="nt5e-check"><input type="checkbox" data-target data-npc-id="{{id}}" data-field="repeat" {{#if repeat}}checked{{/if}} {{#unless active}}disabled{{/unless}}> {{localize "NT5E.RepeatedArg"}}</label>
+        </div>
+        {{/each}}
+      </div>
+
+      <div class="nt5e-line">
+        <label>{{localize "NT5E.Skill"}}
+          <select data-ui="skill">
+            {{#each skills}}<option value="{{id}}" {{#if (eq id ../ui.skill)}}selected{{/if}}>{{label}}</option>{{/each}}
+          </select>
+        </label>
+        <label class="nt5e-check"><input type="checkbox" data-ui="advantage" {{#if ui.advantage}}checked{{/if}}> {{localize "NT5E.Advantage"}}</label>
+        <label class="nt5e-grow">{{localize "NT5E.ArgText"}}
+          <input type="text" data-ui="argText" value="{{ui.argText}}" placeholder="{{localize 'NT5E.ArgTextHint'}}">
+        </label>
+      </div>
+      <div class="nt5e-line">
+        <button type="button" class="nt5e-primary" data-action="requestArgument"><i class="fa-solid fa-scroll"></i> {{localize "NT5E.RequestCheck"}}</button>
+        <span class="nt5e-or">{{localize "NT5E.Or"}}</span>
+        <input type="number" data-ui="manual" value="{{ui.manual}}" placeholder="{{localize 'NT5E.Total'}}">
+        <label class="nt5e-check"><input type="checkbox" data-ui="manualNat20" {{#if ui.manualNat20}}checked{{/if}}> {{localize "NT5E.Nat20"}}</label>
+        <button type="button" data-action="manualArgument">{{localize "NT5E.ApplyManual"}}</button>
+        <button type="button" data-action="roleplayArgument" title="{{localize 'NT5E.RoleplayHint'}}"><i class="fa-solid fa-masks-theater"></i> {{localize "NT5E.Roleplay"}}</button>
+      </div>
+    </fieldset>
+
+    <fieldset {{#if disabled}}disabled{{/if}}>
+      <legend>{{localize "NT5E.ReadThem"}}</legend>
+      <div class="nt5e-line">
+        <label>{{localize "NT5E.ReadWho"}}
+          <select data-ui="readNpc">
+            {{#each readTargets}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>{{/each}}
+          </select>
+        </label>
+        <label>{{localize "NT5E.Skill"}}
+          <select data-ui="readSkill">
+            {{#each skills}}<option value="{{id}}" {{#if (eq id ../ui.readSkill)}}selected{{/if}}>{{label}}</option>{{/each}}
+          </select>
+        </label>
+        <button type="button" class="nt5e-primary" data-action="requestRead"><i class="fa-solid fa-eye"></i> {{localize "NT5E.RequestCheck"}}</button>
+        <span class="nt5e-or">{{localize "NT5E.Or"}}</span>
+        <input type="number" data-ui="readManual" value="{{ui.readManual}}" placeholder="{{localize 'NT5E.Total'}}">
+        <button type="button" data-action="manualRead">{{localize "NT5E.ApplyManual"}}</button>
+      </div>
+      <p class="nt5e-hint">{{localize "NT5E.ReadHint"}}</p>
+    </fieldset>
+  </section>
+
+  {{!-- Журнал разговора --}}
+  <section class="nt5e-log">
+    <h4>{{localize "NT5E.Log"}}</h4>
+    {{#each log}}
+      <div class="nt5e-log-entry">
+        <b>{{npcName}}:</b>
+        {{#if (eq type "start")}}▶ {{localize "NT5E.LogStart"}} ({{interest}}● / {{patience}}■)
+        {{else if (eq type "accept")}}🤝 {{localize "NT5E.LogAccept"}} ({{interest}}● / {{patience}}■)
+        {{else}}
+          {{localize (concat "NT5E.Kind." kind)}}{{#if row}} — {{row}}{{/if}}
+          {{#if total}}· {{total}}{{/if}} → {{interest}}● / {{patience}}■
+        {{/if}}
+      </div>
+    {{/each}}
+  </section>
+
+</div>
