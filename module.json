@@ -1,22 +1,11 @@
 {
   "id": "negotiation-tracker-5e",
-  "title": "Negotiation Tracker 5e",
-  "description": "Interest / Patience / Motivations / Pitfalls negotiation tracker for D&D 5e, adapted from the Draw Steel negotiation rules. Rolls Persuasion, Intimidation, Insight and Deception straight from the dnd5e system.",
-  "version": "1.2.0",
+  "title": "Negotiation Tracker",
+  "description": "Negotiation tracker (Interest / Patience / Motivations / Pitfalls) based on the Draw Steel rules. Supports D&D 5e, Pathfinder 2e, WFRP 4e, Call of Cthulhu 7e / Pulp Cthulhu, Vampire 5e, OSR (OSE) and Draw Steel. Multiple NPCs, parallel conversations, players roll from chat. Three looks: fantasy scroll, cyberpunk terminal, office document.",
+  "version": "2.1.0",
   "compatibility": {
     "minimum": "13",
     "verified": "14"
-  },
-  "relationships": {
-    "systems": [
-      {
-        "id": "dnd5e",
-        "type": "system",
-        "compatibility": {
-          "minimum": "5.0.0"
-        }
-      }
-    ]
   },
   "esmodules": [
     "scripts/main.js"
