@@ -1,6 +1,9 @@
- import {
-  MOTIVATION_KEYS, STARTING_ATTITUDES, clamp, tierOf, resolve, statusOf, startStats
+import {
+  MOTIVATION_KEYS, STARTING_ATTITUDES, clamp, resolve, statusOf, startStats, tierFromResult
 } from "./rules.js";
+import {
+  PROFILES, PROFILE_IDS, detectProfile, getChecks, checkLabel, checkSpec, defaultCheck, dcFor, rollCheck
+} from "./systems.js";
 
 const MODULE_ID = "negotiation-tracker-5e";
 const TEMPLATE = `modules/${MODULE_ID}/templates/tracker.hbs`;
@@ -8,6 +11,29 @@ const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 const T = (k, d) => game.i18n.format(`NT5E.${k}`, d ?? {});
 const esc = (v) => foundry.utils.escapeHTML(String(v ?? ""));
 const uid = () => foundry.utils.randomID();
+
+/* -------------------------------------------- */
+/*  Система и скин                              */
+/* -------------------------------------------- */
+
+const SKINS = ["fantasy", "cyber", "office"];
+const SKIN_ICONS = { fantasy: "fa-solid fa-scroll", cyber: "fa-solid fa-microchip", office: "fa-solid fa-file-lines" };
+
+function currentProfileId() {
+  const chosen = game.settings.get(MODULE_ID, "ruleset");
+  return PROFILE_IDS.includes(chosen) ? chosen : detectProfile();
+}
+
+function currentSkin() {
+  const s = game.settings.get(MODULE_ID, "skin");
+  return SKINS.includes(s) ? s : "fantasy";
+}
+
+function applySkin() {
+  const body = document.body;
+  SKINS.forEach((s) => body.classList.remove(`nt5e-skin-${s}`));
+  body.classList.add(`nt5e-skin-${currentSkin()}`);
+}
 
 /* -------------------------------------------- */
 /*  State: разговоры -> НПС                     */
@@ -23,6 +49,7 @@ function newNpc(name = "") {
     id: uid(), name,
     status: "idle", // idle | active | final | ended | closed
     interest: 2, patience: 3, readLocked: false,
+    dcSuccess: null, dcGreat: null,
     setup: { attitude: "neutral", language: "0", fame: "none" },
     rows: newRows()
   };
@@ -80,6 +107,7 @@ class NegotiationTracker extends HandlebarsApplicationMixin(ApplicationV2) {
     window: { title: "NT5E.Title", icon: "fa-solid fa-scroll", resizable: true },
     position: { width: 900, height: "auto" },
     actions: {
+      setSkin: NegotiationTracker.#onSetSkin,
       selectConv: NegotiationTracker.#onSelectConv,
       addConv: NegotiationTracker.#onAddConv,
       removeConv: NegotiationTracker.#onRemoveConv,
@@ -106,8 +134,8 @@ class NegotiationTracker extends HandlebarsApplicationMixin(ApplicationV2) {
 
   /** Временные значения формы (не сохраняются в мире). */
   ui = {
-    skill: "per", advantage: false, argText: "", manual: "", manualNat20: false,
-    readSkill: "ins", readManual: "", readNpc: "",
+    skill: "", advantage: false, argText: "", manual: "", manualNat20: false,
+    readSkill: "", readManual: "", readNpc: "",
     targets: {} // npcId -> { on, row, lie, repeat }
   };
 
@@ -132,9 +160,13 @@ class NegotiationTracker extends HandlebarsApplicationMixin(ApplicationV2) {
     const ui = this.ui;
     const anyActive = conv.npcs.some((n) => n.status === "active");
 
-    const skills = Object.entries(CONFIG.DND5E?.skills ?? {}).map(([id, v]) => ({
-      id, label: v.label ?? v
-    })).sort((a, b) => a.label.localeCompare(b.label));
+    const profileId = currentProfileId();
+    const profile = PROFILES[profileId];
+    const skills = getChecks(profileId);
+    if (!skills.some((c) => c.id === ui.skill)) ui.skill = defaultCheck(profileId, "argument");
+    if (!skills.some((c) => c.id === ui.readSkill)) ui.readSkill = defaultCheck(profileId, "read");
+    const selSpec = checkSpec(profileId, ui.skill);
+    const dcKind = profile.dcKind;
 
     const rowsOf = (n) => n.rows.map((r, i) => ({
       ...r, index: i,
@@ -195,18 +227,22 @@ class NegotiationTracker extends HandlebarsApplicationMixin(ApplicationV2) {
         label: `${T(`Attitude.${id}`)} (${STARTING_ATTITUDES[id].interest}/${STARTING_ATTITUDES[id].patience})`,
         selected: id === s.setup.attitude
       })),
-      dc: this.#dcs(),
+      profileId,
+      profileLabel: T(`Profile.${profileId}`),
+      showAdvantage: selSpec.adv,
+      showDcSuccess: dcKind !== "under" && dcKind !== "coc",
+      dcSuccessLabel: T(`DC.${dcKind}.success`),
+      dcGreatLabel: T(`DC.${dcKind}.great`),
+      dcDefaults: profile.dc,
+      dcHint: T(`DC.${dcKind}.hint`),
+      manualPlaceholder: profileId === "cthulhu" ? T("ManualLevel") : selSpec.mode === "under" ? T("ManualMargin") : T("Total"),
+      skins: SKINS.map((id) => ({
+        id, label: T(`Skin.${id}`), icon: SKIN_ICONS[id], active: id === currentSkin()
+      })),
       targets, readTargets,
       anyActive,
       disabled: !anyActive,
       log: [...conv.log].reverse().slice(0, 40)
-    };
-  }
-
-  #dcs() {
-    return {
-      success: game.settings.get(MODULE_ID, "dcSuccess"),
-      great: game.settings.get(MODULE_ID, "dcGreat")
     };
   }
 
@@ -241,6 +277,14 @@ class NegotiationTracker extends HandlebarsApplicationMixin(ApplicationV2) {
     el.querySelectorAll("[data-setup]").forEach((input) => {
       input.addEventListener("change", (ev) => {
         this.npc.setup[ev.currentTarget.dataset.setup] = ev.currentTarget.value;
+        this.#save(false);
+      });
+    });
+
+    el.querySelectorAll("[data-npc-field]").forEach((input) => {
+      input.addEventListener("change", (ev) => {
+        const v = ev.currentTarget.value;
+        this.npc[ev.currentTarget.dataset.npcField] = v === "" ? null : Number(v);
         this.#save(false);
       });
     });
@@ -317,13 +361,14 @@ class NegotiationTracker extends HandlebarsApplicationMixin(ApplicationV2) {
 
   /* ---------- запрос проверки игрокам ---------- */
 
-  async #postRequest(conv, type, skill, targets) {
+  async #postRequest(conv, type, check, targets) {
+    const profile = currentProfileId();
     const request = {
-      id: uid(), type, skill, convId: conv.id,
+      id: uid(), type, check, profile, convId: conv.id,
       advantage: !!this.ui.advantage && type === "argument",
       targets, resolved: false
     };
-    const skillLabel = CONFIG.DND5E?.skills?.[skill]?.label ?? skill;
+    const skillLabel = checkLabel(profile, check);
     const names = targets
       .map((t) => conv.npcs.find((n) => n.id === t.npcId)?.name || T("Unnamed"))
       .map(esc).join(", ");
@@ -339,30 +384,29 @@ class NegotiationTracker extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   /** Применяет результат броска, присланный игроком. */
-  async applyResult(request, { total, nat20 = false, actorName = "" }) {
+  async applyResult(request, result) {
     const conv = this.state.conversations.find((c) => c.id === request.convId);
     if (!conv) return;
-    const rollLabel = CONFIG.DND5E?.skills?.[request.skill]?.label ?? request.skill;
-    if (request.type === "read") {
-      return this.#applyRead(conv, request.targets[0]?.npcId, { total, actorName, rollLabel });
-    }
-    return this.#applyArgument(conv, request.targets, { total, nat20, actorName, rollLabel });
+    const rollLabel = checkLabel(request.profile, request.check);
+    const ctx = { profile: request.profile, check: request.check, result, rollLabel, actorName: result.actorName ?? "" };
+    if (request.type === "read") return this.#applyRead(conv, request.targets[0]?.npcId, ctx);
+    return this.#applyArgument(conv, request.targets, ctx);
   }
 
-  /** Применяет один бросок ко всем целям, каждая обрабатывается по своим мотивациям. */
-  async #applyArgument(conv, targets, { total = null, nat20 = false, forcedTier = null, rollLabel = "", actorName = "" } = {}) {
-    const dc = this.#dcs();
+  /** Применяет один бросок ко всем целям, у каждой свои мотивации и свои Сл. */
+  async #applyArgument(conv, targets, { profile = currentProfileId(), check = "", result = null, forcedTier = null, rollLabel = "", actorName = "" } = {}) {
+    const spec = checkSpec(profile, check);
     const entries = [];
 
     for (const target of targets) {
       const npc = conv.npcs.find((n) => n.id === target.npcId);
       if (!npc || npc.status !== "active") continue;
       const { kind, row } = this.#classify(npc, target);
-      const auto = kind === "pitfall" || kind === "repeat";
-      const tier = auto ? 1 : (forcedTier ?? tierOf(total, dc));
+      const auto = kind === "pitfall" || kind === "repeat" || (kind === "neither" && !!target.repeated);
+      const tier = auto ? 1 : (forcedTier ?? (result ? tierFromResult(result, dcFor(profile, spec, npc)) : 1));
       const repeatedNeither = kind === "neither" && !!target.repeated;
 
-      const res = resolve({ kind, tier, nat20, lie: !!target.lie, repeatedNeither });
+      const res = resolve({ kind, tier, nat20: !!result?.crit, lie: !!target.lie, repeatedNeither });
       npc.interest += res.dI;
       npc.patience += res.dP;
       if (kind === "motivation" && tier >= 2) row.used = true;
@@ -372,7 +416,7 @@ class NegotiationTracker extends HandlebarsApplicationMixin(ApplicationV2) {
       const entry = {
         type: "argument", kind, npcId: npc.id, npcName: npc.name || T("Unnamed"),
         row: row ? this.#rowName(row) : "",
-        total: auto || total === null ? null : total,
+        display: auto || !result ? "" : result.display,
         tier, dI: res.dI, dP: res.dP, notes: res.notes,
         interest: npc.interest, patience: npc.patience, status: npc.status, by: actorName
       };
@@ -382,32 +426,35 @@ class NegotiationTracker extends HandlebarsApplicationMixin(ApplicationV2) {
 
     if (!entries.length) return ui.notifications.warn(T("NotActive"));
     await this.#save();
-    await this.#chat(this.#resultHtml(conv, entries, { total, rollLabel, actorName, publicNotes: ["caughtLie", "nat20"] }));
+    await this.#chat(this.#resultHtml(conv, entries, {
+      display: result?.display ?? null, rollLabel, actorName, publicNotes: ["caughtLie", "nat20"]
+    }));
   }
 
-  async #applyRead(conv, npcId, { total, actorName = "", rollLabel = "" }) {
+  async #applyRead(conv, npcId, { profile = currentProfileId(), check = "", result, actorName = "", rollLabel = "" }) {
     const npc = conv.npcs.find((n) => n.id === npcId);
     if (!npc || npc.status !== "active") return ui.notifications.warn(T("NotActive"));
     if (npc.readLocked) return ui.notifications.warn(T("ReadLocked"));
-    const res = resolve({ kind: "read", tier: tierOf(total, this.#dcs()) });
+    const tier = tierFromResult(result, dcFor(profile, checkSpec(profile, check), npc));
+    const res = resolve({ kind: "read", tier });
     npc.patience += res.dP;
     npc.readLocked = true;
     this.#recompute(npc);
     const entry = {
-      type: "read", kind: "read", npcId, npcName: npc.name || T("Unnamed"), row: "", total,
-      tier: tierOf(total, this.#dcs()), by: actorName, dI: 0, dP: res.dP, notes: res.notes,
+      type: "read", kind: "read", npcId, npcName: npc.name || T("Unnamed"), row: "", display: result.display,
+      tier, by: actorName, dI: 0, dP: res.dP, notes: res.notes,
       interest: npc.interest, patience: npc.patience, status: npc.status
     };
     conv.log.push(entry);
     await this.#save();
     await this.#chat(this.#resultHtml(conv, [entry], {
-      total, rollLabel, actorName, publicNotes: ["readAnnoyed", "readHard", "readLearn"]
+      display: result.display, rollLabel, actorName, publicNotes: ["readAnnoyed", "readHard", "readLearn"]
     }));
   }
 
-  #resultHtml(conv, entries, { total, rollLabel, actorName, publicNotes }) {
-    const roll = total !== null && total !== undefined
-      ? `<p>${actorName ? `<i>${esc(actorName)}</i> · ` : ""}${esc(rollLabel)} <b>${total}</b></p>` : "";
+  #resultHtml(conv, entries, { display, rollLabel, actorName, publicNotes }) {
+    const roll = display !== null && display !== undefined && display !== ""
+      ? `<p>${actorName ? `<i>${esc(actorName)}</i> · ` : ""}${esc(rollLabel)} <b>${esc(display)}</b></p>` : "";
     const blocks = entries.map((e) => {
       const deltas = [this.#delta(e.dI, "●"), this.#delta(e.dP, "■")].filter(Boolean).join(" ") || T("NoChange");
       const reaction = e.kind === "read" ? "" : `<i>${T(`Reaction.${e.dI > 0 ? "positive" : e.dI < 0 ? "negative" : "impatient"}`)}</i>`;
@@ -544,6 +591,15 @@ class NegotiationTracker extends HandlebarsApplicationMixin(ApplicationV2) {
 
   /* ---------- actions: аргументы и проверки ---------- */
 
+  /** Результат, введённый Мастером вручную (бросили за столом). */
+  #manualResult(value, crit) {
+    const profile = currentProfileId();
+    const spec = checkSpec(profile, this.ui.skill);
+    return spec.mode === "under"
+      ? { mode: "under", margin: value, crit, display: `${value >= 0 ? "+" : ""}${value}` }
+      : { mode: spec.mode, total: value, crit, display: String(value) };
+  }
+
   static async #onRequestArgument() {
     const conv = this.conv;
     const targets = this.#selectedTargets();
@@ -557,19 +613,19 @@ class NegotiationTracker extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     // Ловушки, повторные мотивации и повторы аргумента бросков не требуют.
-    if (noRoll.length) await this.#applyArgument(conv, noRoll);
+    if (noRoll.length) await this.#applyArgument(conv, noRoll, { check: this.ui.skill });
     if (needRoll.length) await this.#postRequest(conv, "argument", this.ui.skill, needRoll);
     this.#resetTargetFlags();
     this.render();
   }
 
   static async #onManualArgument() {
-    const total = Number(this.ui.manual);
-    if (!Number.isFinite(total) || this.ui.manual === "") return ui.notifications.warn(T("EnterTotal"));
+    const value = Number(this.ui.manual);
+    if (!Number.isFinite(value) || this.ui.manual === "") return ui.notifications.warn(T("EnterTotal"));
     const targets = this.#selectedTargets();
     if (!targets.length) return ui.notifications.warn(T("NoTargets"));
     await this.#applyArgument(this.conv, targets, {
-      total, nat20: this.ui.manualNat20 === true, rollLabel: T("Manual")
+      check: this.ui.skill, result: this.#manualResult(value, this.ui.manualNat20 === true), rollLabel: T("Manual")
     });
     this.#resetTargetFlags();
     this.render();
@@ -578,7 +634,7 @@ class NegotiationTracker extends HandlebarsApplicationMixin(ApplicationV2) {
   static async #onRoleplayArgument() {
     const targets = this.#selectedTargets();
     if (!targets.length) return ui.notifications.warn(T("NoTargets"));
-    await this.#applyArgument(this.conv, targets, { forcedTier: 3 });
+    await this.#applyArgument(this.conv, targets, { check: this.ui.skill, forcedTier: 3 });
     this.#resetTargetFlags();
     this.render();
   }
@@ -592,11 +648,22 @@ class NegotiationTracker extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   static async #onManualRead() {
-    const total = Number(this.ui.readManual);
-    if (!Number.isFinite(total) || this.ui.readManual === "") return ui.notifications.warn(T("EnterTotal"));
-    await this.#applyRead(this.conv, this.ui.readNpc, { total, rollLabel: T("Manual") });
+    const value = Number(this.ui.readManual);
+    if (!Number.isFinite(value) || this.ui.readManual === "") return ui.notifications.warn(T("EnterTotal"));
+    const profile = currentProfileId();
+    const spec = checkSpec(profile, this.ui.readSkill);
+    const result = spec.mode === "under"
+      ? { mode: "under", margin: value, display: `${value >= 0 ? "+" : ""}${value}` }
+      : { mode: spec.mode, total: value, display: String(value) };
+    await this.#applyRead(this.conv, this.ui.readNpc, {
+      check: this.ui.readSkill, result, rollLabel: T("Manual")
+    });
     this.ui.readManual = "";
     this.render();
+  }
+
+  static async #onSetSkin(event, target) {
+    await game.settings.set(MODULE_ID, "skin", target.dataset.skin);
   }
 }
 
@@ -619,15 +686,20 @@ Hooks.once("init", () => {
   game.settings.register(MODULE_ID, "state", {
     scope: "world", config: false, type: Object, default: {}
   });
-  game.settings.register(MODULE_ID, "dcSuccess", {
-    name: "NT5E.Settings.dcSuccess.name", hint: "NT5E.Settings.dcSuccess.hint",
-    scope: "world", config: true, type: Number, default: 10,
-    range: { min: 5, max: 25, step: 1 }
+  game.settings.register(MODULE_ID, "ruleset", {
+    name: "NT5E.Settings.ruleset.name", hint: "NT5E.Settings.ruleset.hint",
+    scope: "world", config: true, type: String, default: "auto",
+    choices: {
+      auto: "NT5E.Settings.ruleset.auto",
+      ...Object.fromEntries(PROFILE_IDS.map((id) => [id, `NT5E.Profile.${id}`]))
+    },
+    onChange: () => app?.render()
   });
-  game.settings.register(MODULE_ID, "dcGreat", {
-    name: "NT5E.Settings.dcGreat.name", hint: "NT5E.Settings.dcGreat.hint",
-    scope: "world", config: true, type: Number, default: 15,
-    range: { min: 6, max: 30, step: 1 }
+  game.settings.register(MODULE_ID, "skin", {
+    name: "NT5E.Settings.skin.name", hint: "NT5E.Settings.skin.hint",
+    scope: "world", config: true, type: String, default: "fantasy",
+    choices: Object.fromEntries(SKINS.map((id) => [id, `NT5E.Skin.${id}`])),
+    onChange: () => { applySkin(); app?.render(); }
   });
   game.settings.register(MODULE_ID, "publicChat", {
     name: "NT5E.Settings.publicChat.name", hint: "NT5E.Settings.publicChat.hint",
@@ -638,15 +710,14 @@ Hooks.once("init", () => {
 const SOCKET = `module.${MODULE_ID}`;
 
 /** Выполняется только на клиенте активного Мастера. */
-async function handleResult({ messageId, total, nat20, actorName }) {
+async function handleResult({ messageId, result, actorName }) {
   const message = game.messages.get(messageId);
   const request = message?.getFlag(MODULE_ID, "request");
-  if (!request || request.resolved) return;
+  if (!request || request.resolved || !result) return;
   await message.update({
-    flags: { [MODULE_ID]: { request: { resolved: true, total, by: actorName } } }
+    flags: { [MODULE_ID]: { request: { resolved: true, total: result.display, by: actorName } } }
   });
-  const tracker = getApp();
-  await tracker.applyResult(request, { total, nat20, actorName });
+  await getApp().applyResult(request, { ...result, actorName });
 }
 
 function submitResult(payload) {
@@ -655,7 +726,7 @@ function submitResult(payload) {
   game.socket.emit(SOCKET, { action: "result", ...payload });
 }
 
-/** Игрок нажал кнопку в чате и бросает навык. */
+/** Игрок нажал кнопку в чате и делает проверку. */
 async function playerRoll(message, button) {
   const request = message.getFlag(MODULE_ID, "request");
   if (!request || request.resolved) return;
@@ -664,17 +735,12 @@ async function playerRoll(message, button) {
 
   button.disabled = true;
   try {
-    const config = { skill: request.skill };
-    if (request.advantage) config.advantage = true;
-    const rolls = await actor.rollSkill(config);
-    const roll = Array.isArray(rolls) ? rolls[0] : rolls;
-    if (!roll) { button.disabled = false; return; }
-    const die = roll.d20 ?? roll.dice?.[0];
-    await submitResult({
-      messageId: message.id, total: roll.total, nat20: die?.total === 20, actorName: actor.name
-    });
+    const result = await rollCheck(request.profile, request.check, actor, { advantage: request.advantage });
+    if (!result) { button.disabled = false; return; }
+    await submitResult({ messageId: message.id, result, actorName: actor.name });
   } catch (err) {
     console.error(`${MODULE_ID} |`, err);
+    ui.notifications.error(T("RollFailed"));
     button.disabled = false;
   }
 }
@@ -695,6 +761,7 @@ Hooks.on("renderChatMessageHTML", (message, html) => {
 });
 
 Hooks.once("ready", () => {
+  applySkin();
   game.modules.get(MODULE_ID).api = { open: openTracker };
   game.socket.on(SOCKET, (data) => {
     if (data?.action === "result" && game.users.activeGM?.isSelf) handleResult(data);

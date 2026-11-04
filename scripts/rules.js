@@ -109,3 +109,24 @@ export function startStats({ attitude, language = 0, fame = "none" }) {
   if (fame === "infamous") interest -= 1;
   return { interest: Math.max(1, clamp(interest)), patience: clamp(patience) };
 }
+
+/* ------------------------------------------------------------------ */
+/*  Результат броска -> тир (для любой системы)                       */
+/* ------------------------------------------------------------------ */
+
+/**
+ * @param {object} result
+ * @param {"high"|"under"|"pool"} result.mode  high/pool: total vs DC; under: margin (запас до цели)
+ * @param {number} [result.total]
+ * @param {number} [result.margin]
+ * @param {boolean} [result.auto3]  автоматический тир 3 (напр. натуральные 19–20 в Draw Steel)
+ * @param {number} [result.shift]   сдвиг тира (двойной edge/bane, натуральная 20 в PF2e)
+ * @param {{success:number,great:number}} dc   для under: great = запас, нужный для крупного успеха
+ */
+export function tierFromResult(result, dc) {
+  if (result.auto3) return 3;
+  let tier;
+  if (result.mode === "under") tier = (result.margin ?? -1) < 0 ? 1 : ((result.margin ?? 0) >= dc.great ? 3 : 2);
+  else tier = tierOf(result.total ?? 0, dc);
+  return Math.max(1, Math.min(3, tier + (result.shift ?? 0)));
+}
