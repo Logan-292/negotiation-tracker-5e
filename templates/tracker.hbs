@@ -1,5 +1,15 @@
 <div class="nt5e">
 
+  {{!-- Скин и система --}}
+  <div class="nt5e-topbar">
+    <span class="nt5e-ruleset">{{localize "NT5E.Ruleset"}}: <b>{{profileLabel}}</b></span>
+    <span class="nt5e-skins" title="{{localize 'NT5E.SkinLabel'}}">
+      {{#each skins}}
+      <button type="button" class="{{#if active}}active{{/if}}" data-action="setSkin" data-skin="{{id}}" title="{{label}}"><i class="{{icon}}"></i></button>
+      {{/each}}
+    </span>
+  </div>
+
   {{!-- Разговоры --}}
   <nav class="nt5e-tabs nt5e-convs">
     {{#each convs}}
@@ -35,6 +45,18 @@
     <input type="text" name="npcName" value="{{npc.name}}" placeholder="{{localize 'NT5E.NpcName'}}">
     <span class="nt5e-status nt5e-status-{{npc.status}}">{{statusLabel}}</span>
   </header>
+
+  <div class="nt5e-dcrow">
+    {{#if showDcSuccess}}
+    <label>{{dcSuccessLabel}}
+      <input type="number" data-npc-field="dcSuccess" value="{{npc.dcSuccess}}" placeholder="{{dcDefaults.success}}">
+    </label>
+    {{/if}}
+    <label>{{dcGreatLabel}}
+      <input type="number" data-npc-field="dcGreat" value="{{npc.dcGreat}}" placeholder="{{dcDefaults.great}}">
+    </label>
+    <span class="nt5e-hint">{{dcHint}}</span>
+  </div>
 
   {{#if idle}}
   <section class="nt5e-setup">
@@ -121,8 +143,6 @@
 
   {{!-- Аргументы на весь разговор --}}
   <section class="nt5e-actions">
-    <div class="nt5e-actor-row"><span class="nt5e-dc">{{localize "NT5E.DCLine" success=dc.success great=dc.great}}</span></div>
-
     <fieldset {{#if disabled}}disabled{{/if}}>
       <legend>{{localize "NT5E.MakeArgument"}}</legend>
 
@@ -152,7 +172,7 @@
             {{#each skills}}<option value="{{id}}" {{#if (eq id ../ui.skill)}}selected{{/if}}>{{label}}</option>{{/each}}
           </select>
         </label>
-        <label class="nt5e-check"><input type="checkbox" data-ui="advantage" {{#if ui.advantage}}checked{{/if}}> {{localize "NT5E.Advantage"}}</label>
+        {{#if showAdvantage}}<label class="nt5e-check"><input type="checkbox" data-ui="advantage" {{#if ui.advantage}}checked{{/if}}> {{localize "NT5E.Advantage"}}</label>{{/if}}
         <label class="nt5e-grow">{{localize "NT5E.ArgText"}}
           <input type="text" data-ui="argText" value="{{ui.argText}}" placeholder="{{localize 'NT5E.ArgTextHint'}}">
         </label>
@@ -160,7 +180,7 @@
       <div class="nt5e-line">
         <button type="button" class="nt5e-primary" data-action="requestArgument"><i class="fa-solid fa-scroll"></i> {{localize "NT5E.RequestCheck"}}</button>
         <span class="nt5e-or">{{localize "NT5E.Or"}}</span>
-        <input type="number" data-ui="manual" value="{{ui.manual}}" placeholder="{{localize 'NT5E.Total'}}">
+        <input type="number" data-ui="manual" value="{{ui.manual}}" placeholder="{{manualPlaceholder}}">
         <label class="nt5e-check"><input type="checkbox" data-ui="manualNat20" {{#if ui.manualNat20}}checked{{/if}}> {{localize "NT5E.Nat20"}}</label>
         <button type="button" data-action="manualArgument">{{localize "NT5E.ApplyManual"}}</button>
         <button type="button" data-action="roleplayArgument" title="{{localize 'NT5E.RoleplayHint'}}"><i class="fa-solid fa-masks-theater"></i> {{localize "NT5E.Roleplay"}}</button>
@@ -182,7 +202,7 @@
         </label>
         <button type="button" class="nt5e-primary" data-action="requestRead"><i class="fa-solid fa-eye"></i> {{localize "NT5E.RequestCheck"}}</button>
         <span class="nt5e-or">{{localize "NT5E.Or"}}</span>
-        <input type="number" data-ui="readManual" value="{{ui.readManual}}" placeholder="{{localize 'NT5E.Total'}}">
+        <input type="number" data-ui="readManual" value="{{ui.readManual}}" placeholder="{{manualPlaceholder}}">
         <button type="button" data-action="manualRead">{{localize "NT5E.ApplyManual"}}</button>
       </div>
       <p class="nt5e-hint">{{localize "NT5E.ReadHint"}}</p>
@@ -199,7 +219,7 @@
         {{else if (eq type "accept")}}🤝 {{localize "NT5E.LogAccept"}} ({{interest}}● / {{patience}}■)
         {{else}}
           {{localize (concat "NT5E.Kind." kind)}}{{#if row}} — {{row}}{{/if}}
-          {{#if total}}· {{total}}{{/if}} → {{interest}}● / {{patience}}■
+          {{#if display}}· {{display}}{{/if}} → {{interest}}● / {{patience}}■
         {{/if}}
       </div>
     {{/each}}
