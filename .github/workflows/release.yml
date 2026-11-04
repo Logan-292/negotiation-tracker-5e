@@ -23,7 +23,9 @@ jobs:
              --arg url "https://github.com/$REPO" \
              --arg manifest "https://github.com/$REPO/releases/latest/download/module.json" \
              --arg download "https://github.com/$REPO/releases/download/$GITHUB_REF_NAME/module.zip" \
-             '.version=$v | .url=$url | .manifest=$manifest | .download=$download' \
+             --arg changelog "https://github.com/$REPO/releases/tag/$GITHUB_REF_NAME" \
+             --arg bugs "https://github.com/$REPO/issues" \
+             '.version=$v | .url=$url | .manifest=$manifest | .download=$download | .changelog=$changelog | .bugs=$bugs' \
              module.json > module.tmp && mv module.tmp module.json
           cat module.json
 
