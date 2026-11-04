@@ -1,367 +1,379 @@
 /* ============================================================
-   Negotiation Tracker 5e — оформление «свиток / пергамент»
+   Negotiation Tracker — три скина через переменные.
+   Класс скина ставится на <body>: nt5e-skin-fantasy | cyber | office
    ============================================================ */
 
-.nt5e-app,
-.nt5e-chat {
-  --nt-paper: #ecdcb0;
-  --nt-paper-dark: #d8c18a;
-  --nt-paper-edge: #b48f4f;
+/* ---------- Фэнтези (по умолчанию): свиток ---------- */
+body, body.nt5e-skin-fantasy {
+  --nt-font: "Palatino Linotype", "Book Antiqua", Palatino, "Iowan Old Style", Georgia, serif;
+  --nt-head-variant: small-caps;
+  --nt-head-spacing: 1px;
+  --nt-radius: 4px;
+  --nt-seal-radius: 50% / 45%;
   --nt-ink: #120a04;
   --nt-ink-soft: #2e1c0c;
-  --nt-wax: #8e1b1b;
-  --nt-wax-dark: #5a0b0b;
-  --nt-green: #3d5a1f;
-  --nt-wood: #4a2c14;
-  --nt-wood-light: #7a4a22;
-  --nt-font: "Palatino Linotype", "Book Antiqua", Palatino, "Iowan Old Style", Georgia, serif;
+  --nt-heading: #5a0b0b;
+  --nt-line: #2e1c0c;
+  --nt-field-bg: #fff6d655;
+  --nt-field-focus: #fff6d6aa;
+  --nt-frame-bg: #4a2c14;
+  --nt-frame-border: #2a1608;
+  --nt-frame-head-bg: linear-gradient(#6b3f1d, #4a2c14);
+  --nt-frame-head-color: #f3e3bd;
+  --nt-surface:
+    radial-gradient(ellipse at 20% 10%, #fff6d655 0, transparent 45%),
+    radial-gradient(ellipse at 85% 90%, #8a5a2044 0, transparent 50%),
+    repeating-linear-gradient(8deg, #0000 0 6px, #7a4a2208 6px 7px),
+    linear-gradient(90deg, #d8c18a, #ecdcb0 8%, #ecdcb0 92%, #d8c18a);
+  --nt-surface-shadow: inset 0 0 40px #8a5a2055, inset 0 0 6px #6b4a2b, 0 2px 10px #0008;
+  --nt-surface-border: 1px solid #b48f4f;
+  --nt-btn-bg: linear-gradient(#8a5a2b, #4a2c14);
+  --nt-btn-bg-hover: linear-gradient(#a06a34, #5e3a1a);
+  --nt-btn-color: #f3e3bd;
+  --nt-btn-border: #2a1608;
+  --nt-btn-shadow: inset 0 1px 0 #ffffff33, 0 1px 3px #0006;
+  --nt-accent-bg: radial-gradient(ellipse at 30% 30%, #b84a4a, #8e1b1b 60%, #5e0f0f);
+  --nt-accent-border: #3a0808;
+  --nt-accent-color: #f7e6c4;
+  --nt-good-bg: radial-gradient(ellipse at 30% 30%, #6c9a3a, #3d5a1f 60%, #213312);
+  --nt-good-border: #213312;
+  --nt-bad-bg: radial-gradient(circle at 35% 30%, #c04040, #5a0b0b);
+  --nt-bad-border: #3a0808;
+  --nt-warn-bg: radial-gradient(circle at 35% 30%, #d9a53a, #a8741b 60%, #6a460c);
+  --nt-info-bg: radial-gradient(circle at 35% 30%, #4a6fa8, #2b4777 60%, #172644);
+  --nt-soft-bg: #fff6d633;
+  --nt-banner-bg: #d9a53a33;
+  --nt-banner-border: #a8741b;
+  --nt-roller: block;
+  --nt-chat-bg:
+    radial-gradient(ellipse at 20% 10%, #fff6d655 0, transparent 50%),
+    linear-gradient(90deg, #d8c18a, #ecdcb0 10%, #ecdcb0 90%, #d8c18a);
+  --nt-chat-border: 1px solid #b48f4f;
+  --nt-chat-frame: #7a4a22;
 }
 
-/* ---------- окно ---------- */
+/* ---------- Киберпанк: технический терминал ---------- */
+body.nt5e-skin-cyber {
+  --nt-font: "Share Tech Mono", "Cascadia Mono", Consolas, "Courier New", monospace;
+  --nt-head-variant: normal;
+  --nt-head-spacing: 2px;
+  --nt-radius: 0px;
+  --nt-seal-radius: 0;
+  --nt-ink: #e2faff;
+  --nt-ink-soft: #9ddbec;
+  --nt-heading: #05d9e8;
+  --nt-line: #1a8fa0;
+  --nt-field-bg: #05d9e812;
+  --nt-field-focus: #05d9e826;
+  --nt-frame-bg: #04070d;
+  --nt-frame-border: #05d9e8;
+  --nt-frame-head-bg: linear-gradient(90deg, #0b1626, #121d33);
+  --nt-frame-head-color: #05d9e8;
+  --nt-surface:
+    linear-gradient(#05d9e80a 1px, transparent 1px) 0 0 / 100% 4px,
+    linear-gradient(90deg, #05d9e808 1px, transparent 1px) 0 0 / 28px 100%,
+    radial-gradient(ellipse at 90% 0%, #ff2a6d22 0, transparent 45%),
+    linear-gradient(160deg, #0a1120, #070b14);
+  --nt-surface-shadow: inset 0 0 30px #05d9e822, 0 0 14px #05d9e855;
+  --nt-surface-border: 1px solid #05d9e8;
+  --nt-btn-bg: linear-gradient(#0f2233, #0a1624);
+  --nt-btn-bg-hover: linear-gradient(#123049, #0d2033);
+  --nt-btn-color: #05d9e8;
+  --nt-btn-border: #05d9e8;
+  --nt-btn-shadow: inset 0 0 8px #05d9e822;
+  --nt-accent-bg: linear-gradient(135deg, #ff2a6d, #b3124a);
+  --nt-accent-border: #ff2a6d;
+  --nt-accent-color: #fff;
+  --nt-good-bg: linear-gradient(135deg, #00ff9f, #00a86b);
+  --nt-good-border: #00ff9f;
+  --nt-bad-bg: linear-gradient(135deg, #ff2a6d, #8e1040);
+  --nt-bad-border: #ff2a6d;
+  --nt-warn-bg: linear-gradient(135deg, #f9f002, #b3a800);
+  --nt-info-bg: linear-gradient(135deg, #05d9e8, #0a7f8a);
+  --nt-soft-bg: #05d9e80d;
+  --nt-banner-bg: #f9f00222;
+  --nt-banner-border: #f9f002;
+  --nt-roller: none;
+  --nt-chat-bg: linear-gradient(160deg, #0a1120, #070b14);
+  --nt-chat-border: 1px solid #05d9e8;
+  --nt-chat-frame: #ff2a6d;
+}
+
+/* ---------- Офис: документ ---------- */
+body.nt5e-skin-office {
+  --nt-font: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --nt-head-variant: normal;
+  --nt-head-spacing: .3px;
+  --nt-radius: 2px;
+  --nt-seal-radius: 3px;
+  --nt-ink: #0f172a;
+  --nt-ink-soft: #334155;
+  --nt-heading: #1e3a5f;
+  --nt-line: #94a3b8;
+  --nt-field-bg: #f8fafc;
+  --nt-field-focus: #eef4fb;
+  --nt-frame-bg: #cfd6df;
+  --nt-frame-border: #94a3b8;
+  --nt-frame-head-bg: linear-gradient(#f1f5f9, #dde4ec);
+  --nt-frame-head-color: #1e293b;
+  --nt-surface: linear-gradient(#ffffff, #fbfcfd);
+  --nt-surface-shadow: 0 1px 3px #0003, 0 8px 18px #0002;
+  --nt-surface-border: 1px solid #cbd5e1;
+  --nt-btn-bg: linear-gradient(#f8fafc, #e2e8f0);
+  --nt-btn-bg-hover: linear-gradient(#ffffff, #d5dde8);
+  --nt-btn-color: #0f172a;
+  --nt-btn-border: #94a3b8;
+  --nt-btn-shadow: none;
+  --nt-accent-bg: linear-gradient(#2d5f9a, #1e3a5f);
+  --nt-accent-border: #16304f;
+  --nt-accent-color: #fff;
+  --nt-good-bg: linear-gradient(#2f855a, #276749);
+  --nt-good-border: #1f5a3d;
+  --nt-bad-bg: linear-gradient(#c53030, #9b2c2c);
+  --nt-bad-border: #7b2020;
+  --nt-warn-bg: linear-gradient(#d69e2e, #b7791f);
+  --nt-info-bg: linear-gradient(#3182ce, #2b6cb0);
+  --nt-soft-bg: #f1f5f9;
+  --nt-banner-bg: #fefcbf;
+  --nt-banner-border: #d69e2e;
+  --nt-roller: none;
+  --nt-chat-bg: #ffffff;
+  --nt-chat-border: 1px solid #cbd5e1;
+  --nt-chat-frame: #1e3a5f;
+}
+
+/* ============================================================
+   Окно
+   ============================================================ */
 .application.nt5e-app {
-  background: var(--nt-wood);
-  border: 2px solid #2a1608;
-  border-radius: 6px;
+  background: var(--nt-frame-bg);
+  border: 2px solid var(--nt-frame-border);
+  border-radius: var(--nt-radius);
   box-shadow: 0 8px 28px #000a;
   font-family: var(--nt-font);
 }
 .nt5e-app .window-header {
-  background: linear-gradient(#6b3f1d, #4a2c14);
-  border-bottom: 2px solid #2a1608;
-  color: #f3e3bd;
+  background: var(--nt-frame-head-bg);
+  border-bottom: 2px solid var(--nt-frame-border);
+  color: var(--nt-frame-head-color);
   font-family: var(--nt-font);
-  letter-spacing: 1px;
+  letter-spacing: var(--nt-head-spacing);
 }
-.nt5e-app .window-header .window-title { font-variant: small-caps; font-size: 15px; }
-.nt5e-app .window-header button { color: #f3e3bd; }
+.nt5e-app .window-header .window-title { font-variant: var(--nt-head-variant); font-size: 15px; }
+.nt5e-app .window-header button { color: var(--nt-frame-head-color); }
+.nt5e-app .window-content { padding: 18px 12px; background: transparent; overflow-y: auto; }
 
-.nt5e-app .window-content {
-  padding: 18px 12px;
-  background: transparent;
-  overflow-y: auto;
-}
-
-/* ---------- сам свиток ---------- */
+/* ---------- основная поверхность ---------- */
 .nt5e {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  display: flex; flex-direction: column; gap: 10px;
   padding: 34px 26px 30px;
   color: var(--nt-ink);
   font-family: var(--nt-font);
-  font-size: 14px;
-  font-weight: 500;
-  background:
-    radial-gradient(ellipse at 20% 10%, #fff6d655 0, transparent 45%),
-    radial-gradient(ellipse at 85% 90%, #8a5a2044 0, transparent 50%),
-    radial-gradient(circle at 60% 40%, #c9a15c22 0, transparent 40%),
-    repeating-linear-gradient(8deg, #0000 0 6px, #7a4a2208 6px 7px),
-    linear-gradient(90deg, var(--nt-paper-dark), var(--nt-paper) 8%, var(--nt-paper) 92%, var(--nt-paper-dark));
-  box-shadow:
-    inset 0 0 40px #8a5a2055,
-    inset 0 0 6px #6b4a2b,
-    0 2px 10px #0008;
-  border-left: 1px solid var(--nt-paper-edge);
-  border-right: 1px solid var(--nt-paper-edge);
+  font-size: 14px; font-weight: 500;
+  background: var(--nt-surface);
+  box-shadow: var(--nt-surface-shadow);
+  border: var(--nt-surface-border);
+  border-radius: var(--nt-radius);
 }
+.nt5e * { box-sizing: border-box; }
 
-/* деревянные валики сверху и снизу */
-.nt5e::before,
-.nt5e::after {
-  content: "";
-  position: absolute;
-  left: -14px;
-  right: -14px;
-  height: 20px;
-  border-radius: 10px;
-  background: linear-gradient(#2a1608, var(--nt-wood-light) 30%, #a06a34 50%, var(--nt-wood-light) 70%, #2a1608);
+/* валики свитка (только фэнтези) */
+.nt5e::before, .nt5e::after {
+  content: ""; display: var(--nt-roller);
+  position: absolute; left: -14px; right: -14px; height: 20px; border-radius: 10px;
+  background: linear-gradient(#2a1608, #7a4a22 30%, #a06a34 50%, #7a4a22 70%, #2a1608);
   box-shadow: 0 3px 6px #0009;
 }
 .nt5e::before { top: -10px; }
 .nt5e::after { bottom: -10px; }
 
-.nt5e * { box-sizing: border-box; }
-
-/* ---------- заголовки ---------- */
+/* ---------- заголовки и подсказки ---------- */
 .nt5e h4 {
-  margin: 0 0 6px;
-  padding-bottom: 3px;
-  font-family: var(--nt-font);
-  font-variant: small-caps;
-  font-size: 15px;
-  letter-spacing: 1px;
-  color: var(--nt-wax-dark);
-  border-bottom: 1px solid var(--nt-ink-soft);
-  border-image: linear-gradient(90deg, transparent, var(--nt-ink-soft), transparent) 1;
-  text-align: center;
+  margin: 0 0 6px; padding-bottom: 3px;
+  font-family: var(--nt-font); font-variant: var(--nt-head-variant);
+  font-size: 15px; letter-spacing: var(--nt-head-spacing); font-weight: 700;
+  color: var(--nt-heading); text-align: center;
+  border-bottom: 1px solid var(--nt-line);
 }
 .nt5e-hint { margin: 3px 0 0; font-size: 12.5px; font-style: italic; color: var(--nt-ink); }
 
-/* ---------- элементы форм: чернила на бумаге ---------- */
-.nt5e label { display: flex; flex-direction: column; gap: 2px; font-size: 12.5px; font-weight: 600; font-variant: small-caps; letter-spacing: .5px; color: var(--nt-ink); }
-.nt5e label.nt5e-check { flex-direction: row; align-items: center; gap: 5px; padding-bottom: 4px; font-variant: normal; font-size: 12px; }
+/* ---------- формы ---------- */
+.nt5e label { display: flex; flex-direction: column; gap: 2px; font-size: 12.5px; font-weight: 600; font-variant: var(--nt-head-variant); letter-spacing: .5px; color: var(--nt-ink); }
+.nt5e label.nt5e-check { flex-direction: row; align-items: center; gap: 5px; padding-bottom: 4px; font-variant: normal; font-size: 12.5px; }
 .nt5e label.nt5e-grow { flex: 1; min-width: 200px; }
-
-.nt5e input[type=text],
-.nt5e input[type=number],
-.nt5e select {
-  background: #fff6d655;
-  color: var(--nt-ink);
-  font-family: var(--nt-font);
-  border: none;
-  border-bottom: 1.5px solid var(--nt-ink-soft);
-  border-radius: 0;
-  box-shadow: none;
+.nt5e input[type=text], .nt5e input[type=number], .nt5e select {
+  background: var(--nt-field-bg); color: var(--nt-ink); font-family: var(--nt-font);
+  border: none; border-bottom: 1.5px solid var(--nt-line); border-radius: 0; box-shadow: none;
 }
-.nt5e input:focus, .nt5e select:focus { outline: none; background: #fff6d6aa; border-bottom-color: var(--nt-wax); }
-.nt5e select option { background: var(--nt-paper); color: var(--nt-ink); }
-.nt5e input[type=checkbox] { accent-color: var(--nt-wax); }
-.nt5e-actions input[type=number] { width: 72px; }
+.nt5e input:focus, .nt5e select:focus { outline: none; background: var(--nt-field-focus); border-bottom-color: var(--nt-accent-border); }
+.nt5e select option { background: #fff; color: #111; }
+.nt5e input::placeholder { color: var(--nt-ink-soft); opacity: .8; font-style: italic; }
+.nt5e input[type=checkbox] { accent-color: var(--nt-accent-border); }
+.nt5e-actions input[type=number] { width: 78px; }
 
 .nt5e button {
-  font-family: var(--nt-font);
-  color: #f3e3bd;
-  background: linear-gradient(#8a5a2b, var(--nt-wood));
-  border: 1px solid #2a1608;
-  border-radius: 4px;
-  box-shadow: inset 0 1px 0 #ffffff33, 0 1px 3px #0006;
-  text-shadow: 0 1px 1px #0008;
+  font-family: var(--nt-font); color: var(--nt-btn-color);
+  background: var(--nt-btn-bg); border: 1px solid var(--nt-btn-border);
+  border-radius: var(--nt-radius); box-shadow: var(--nt-btn-shadow);
 }
-.nt5e button:hover:not(:disabled) { background: linear-gradient(#a06a34, #5e3a1a); box-shadow: 0 0 6px #b48f4f; }
+.nt5e button:hover:not(:disabled) { background: var(--nt-btn-bg-hover); }
 .nt5e button:disabled { opacity: .45; cursor: not-allowed; }
-.nt5e button.nt5e-primary {
-  background: radial-gradient(circle at 35% 30%, #c04040, var(--nt-wax) 55%, var(--nt-wax-dark));
-  border-color: #3a0808;
-}
-.nt5e-accept { height: 34px; width: 100%; font-size: 14px; letter-spacing: 1px; font-variant: small-caps; }
+.nt5e button.nt5e-primary { background: var(--nt-accent-bg); border-color: var(--nt-accent-border); color: var(--nt-accent-color); }
+.nt5e-accept { height: 34px; width: 100%; font-size: 14px; letter-spacing: var(--nt-head-spacing); font-variant: var(--nt-head-variant); }
 
-/* ---------- шапка ---------- */
+/* ---------- верхняя панель, вкладки ---------- */
+.nt5e-topbar { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.nt5e-ruleset { font-size: 12.5px; color: var(--nt-ink-soft); }
+.nt5e-ruleset b { color: var(--nt-heading); }
+.nt5e-skins { display: inline-flex; gap: 4px; }
+.nt5e .nt5e-skins button { width: 28px; height: 26px; padding: 0; }
+.nt5e .nt5e-skins button.active { background: var(--nt-accent-bg); border-color: var(--nt-accent-border); color: var(--nt-accent-color); }
+
+.nt5e-tabs { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.nt5e-tab {
+  display: inline-flex; align-items: center; gap: 2px; padding-right: 4px;
+  background: var(--nt-field-bg); border: 1.5px solid var(--nt-line); border-radius: var(--nt-radius) var(--nt-radius) 0 0;
+}
+.nt5e .nt5e-tab > button { color: var(--nt-ink); background: transparent; border: none; box-shadow: none; font-weight: 600; height: 28px; padding: 0 8px; }
+.nt5e-tab > button small { margin-left: 6px; font-weight: 400; letter-spacing: 1px; color: var(--nt-heading); }
+.nt5e-tab > a { color: var(--nt-ink); opacity: .6; font-size: 12px; }
+.nt5e-tab > a:hover { opacity: 1; }
+.nt5e-tab.active { background: var(--nt-accent-bg); border-color: var(--nt-accent-border); }
+.nt5e .nt5e-tab.active > button, .nt5e-tab.active > a, .nt5e-tab.active > button small { color: var(--nt-accent-color); opacity: 1; }
+.nt5e-npcs .nt5e-tab { border-radius: 14px; }
+body.nt5e-skin-cyber .nt5e-npcs .nt5e-tab, body.nt5e-skin-office .nt5e-npcs .nt5e-tab { border-radius: var(--nt-radius); }
+.nt5e-npcs .nt5e-tab.active { background: var(--nt-good-bg); border-color: var(--nt-good-border); }
+.nt5e-npc-tab.nt5e-st-final { box-shadow: 0 0 0 2px #d9a53a; }
+.nt5e-npc-tab.nt5e-st-ended, .nt5e-npc-tab.nt5e-st-closed { opacity: .65; }
+.nt5e .nt5e-add { height: 28px; padding: 0 10px; font-size: 12.5px; }
+.nt5e-convs { border-bottom: 2px solid var(--nt-line); }
+.nt5e-conv-head { display: flex; }
+.nt5e-conv-head input { font-weight: 600; }
+
+/* ---------- шапка НПС ---------- */
 .nt5e-head { display: flex; gap: 8px; align-items: center; }
 .nt5e-head input[type=text] {
-  flex: 1;
-  height: 34px;
-  font-size: 22px;
-  font-weight: bold;
-  font-style: italic;
-  text-align: center;
-  color: var(--nt-wax-dark);
+  flex: 1; height: 34px; font-size: 22px; font-weight: bold; text-align: center; color: var(--nt-heading);
 }
-.nt5e-head button { width: 30px; height: 30px; padding: 0; flex: none; }
-
-/* статус — восковая печать */
+body.nt5e-skin-fantasy .nt5e-head input[type=text] { font-style: italic; }
 .nt5e-status {
-  flex: none;
-  padding: 6px 12px;
-  border-radius: 50% / 45%;
-  font-size: 11.5px;
-  font-weight: bold;
-  font-variant: small-caps;
-  letter-spacing: .5px;
-  text-align: center;
-  color: #f7e6c4;
-  background: radial-gradient(circle at 35% 30%, #b84a4a, var(--nt-wax) 55%, var(--nt-wax-dark));
-  box-shadow: 0 2px 4px #0008, inset 0 0 0 2px #ffffff22;
-  text-shadow: 0 1px 1px #0009;
+  flex: none; padding: 6px 12px; border-radius: var(--nt-seal-radius);
+  font-size: 11.5px; font-weight: bold; font-variant: var(--nt-head-variant); letter-spacing: .5px; text-align: center;
+  color: var(--nt-accent-color); background: var(--nt-accent-bg); box-shadow: 0 2px 4px #0008;
 }
-.nt5e-status-active { background: radial-gradient(circle at 35% 30%, #6c9a3a, var(--nt-green) 60%, #213312); }
-.nt5e-status-final { background: radial-gradient(circle at 35% 30%, #d9a53a, #a8741b 60%, #6a460c); }
-.nt5e-status-closed { background: radial-gradient(circle at 35% 30%, #4a6fa8, #2b4777 60%, #172644); }
+.nt5e-status-active { background: var(--nt-good-bg); }
+.nt5e-status-final { background: var(--nt-warn-bg); color: #111; }
+.nt5e-status-closed { background: var(--nt-info-bg); }
+.nt5e-dcrow { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+.nt5e-dcrow input { width: 90px; text-align: center; }
+.nt5e-dcrow .nt5e-hint { flex: 1; min-width: 220px; margin: 0 0 4px; }
 
 /* ---------- подготовка ---------- */
-.nt5e-setup { padding: 8px 10px; border: 1.5px dashed var(--nt-ink-soft); border-radius: 4px; background: #fff6d633; }
+.nt5e-setup { padding: 8px 10px; border: 1.5px dashed var(--nt-line); border-radius: var(--nt-radius); background: var(--nt-soft-bg); }
 .nt5e-setup-row, .nt5e-line, .nt5e-actor-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-bottom: 6px; }
-.nt5e-or { padding-bottom: 6px; font-style: italic; color: var(--nt-ink-soft); }
-.nt5e-dc { margin-left: auto; font-size: 11.5px; font-style: italic; color: var(--nt-ink-soft); }
+.nt5e-or { padding-bottom: 6px; font-style: italic; color: var(--nt-ink); }
 
-/* ---------- основная сетка ---------- */
+/* ---------- сетка ---------- */
 .nt5e-grid { display: grid; grid-template-columns: 1.15fr .45fr 1.7fr; gap: 14px; }
 .nt5e-col { min-width: 0; }
-
-/* лесенки интереса / терпения — закладки-ленточки */
 .nt5e-ladder { display: flex; flex-direction: column; gap: 4px; }
 .nt5e-ladder button {
   display: flex; gap: 8px; align-items: center; justify-content: flex-start;
   height: 32px; padding: 0 8px; line-height: 1;
-  color: var(--nt-ink);
-  text-shadow: none;
-  background: #fff6d644;
-  border: 1px solid var(--nt-ink-soft);
-  box-shadow: none;
-  opacity: .75;
+  color: var(--nt-ink); background: var(--nt-field-bg); border: 1px solid var(--nt-line); box-shadow: none; font-weight: 600;
 }
-.nt5e-ladder button:hover:not(:disabled) { background: #fff6d6aa; box-shadow: none; opacity: 1; }
-.nt5e-ladder button b { width: 20px; font-size: 20px; text-align: center; font-weight: bold; color: var(--nt-wax-dark); }
-.nt5e-ladder button span { font-style: italic; font-size: 12.5px; }
-.nt5e-ladder button.active {
-  opacity: 1;
-  color: #f7e6c4;
-  text-shadow: 0 1px 1px #0009;
-  background: radial-gradient(ellipse at 30% 30%, #b84a4a, var(--nt-wax) 60%, var(--nt-wax-dark));
-  border-color: #3a0808;
-  box-shadow: 0 0 0 2px #b48f4f, 0 2px 6px #0007;
-}
-.nt5e-ladder button.active b { color: #f7e6c4; }
+.nt5e-ladder button:hover:not(:disabled) { background: var(--nt-field-focus); }
+.nt5e-ladder button b { width: 20px; font-size: 20px; text-align: center; color: var(--nt-heading); }
+.nt5e-ladder button span { font-style: italic; font-size: 13px; }
+.nt5e .nt5e-ladder button.active { color: var(--nt-accent-color); background: var(--nt-accent-bg); border-color: var(--nt-accent-border); box-shadow: 0 0 0 2px var(--nt-banner-border), 0 2px 6px #0007; }
+.nt5e-ladder button.active b { color: var(--nt-accent-color); }
 .nt5e-col-narrow .nt5e-ladder button { justify-content: center; }
-.nt5e-col-narrow .nt5e-ladder button.active { background: radial-gradient(ellipse at 30% 30%, #6c9a3a, var(--nt-green) 60%, #213312); }
+.nt5e .nt5e-col-narrow .nt5e-ladder button.active { background: var(--nt-good-bg); border-color: var(--nt-good-border); }
 
-/* ---------- мотивации и подводные камни ---------- */
-.nt5e-row { display: grid; grid-template-columns: 26px 1fr 26px; gap: 6px; align-items: center; }
-.nt5e-rows-head { display: flex; justify-content: space-between; font-size: 10.5px; font-variant: small-caps; letter-spacing: .5px; color: var(--nt-ink-soft); margin-bottom: 2px; }
+/* ---------- мотивации и камни ---------- */
+.nt5e-row { display: grid; grid-template-columns: 26px 1fr 26px; gap: 6px; align-items: center; padding: 2px 0; border-bottom: 1px dotted var(--nt-line); }
+.nt5e-rows-head { display: flex; justify-content: space-between; font-size: 10.5px; font-variant: var(--nt-head-variant); letter-spacing: .5px; color: var(--nt-ink); font-weight: 600; margin-bottom: 2px; }
 .nt5e-rows-head span:nth-child(2) { display: none; }
-.nt5e-row { padding: 2px 0; border-bottom: 1px dotted var(--nt-ink-soft); }
 .nt5e-row .nt5e-name { display: flex; gap: 8px; align-items: center; justify-content: center; text-align: center; font-size: 14px; }
 .nt5e-row .nt5e-name input { height: 22px; text-align: center; font-style: italic; }
-.nt5e-row .nt5e-name a { color: var(--nt-ink-soft); font-size: 12px; }
-.nt5e-row .nt5e-name a:hover { color: var(--nt-wax); }
-.nt5e-row.used .nt5e-name { opacity: .55; text-decoration: line-through; text-decoration-color: var(--nt-wax); }
+.nt5e-row .nt5e-name a { color: var(--nt-ink); font-size: 12px; }
+.nt5e-row.used .nt5e-name { opacity: .55; text-decoration: line-through; }
 .nt5e-row.used .nt5e-name a { text-decoration: none; }
-
 .nt5e button.nt5e-pip {
-  width: 22px; height: 22px; padding: 0; margin: 0 auto;
-  font-size: 0; line-height: 1;
-  background: #fff6d655;
-  border: 1.5px solid var(--nt-ink-soft);
-  border-radius: 2px;
-  box-shadow: none;
-  text-shadow: none;
+  width: 22px; height: 22px; padding: 0; margin: 0 auto; font-size: 0; line-height: 1;
+  background: var(--nt-field-bg); border: 1.5px solid var(--nt-line); border-radius: 2px; box-shadow: none;
 }
-.nt5e button.nt5e-pip:hover:not(:disabled) { background: #fff6d6cc; box-shadow: none; }
-.nt5e button.nt5e-pip.on-m { background: radial-gradient(circle at 35% 30%, #7fa84a, var(--nt-green)); border-color: #213312; box-shadow: 0 0 4px #3d5a1faa; }
-.nt5e button.nt5e-pip.on-p { background: radial-gradient(circle at 35% 30%, #c04040, var(--nt-wax-dark)); border-color: #3a0808; box-shadow: 0 0 4px #8e1b1baa; }
+.nt5e button.nt5e-pip.on-m { background: var(--nt-good-bg); border-color: var(--nt-good-border); }
+.nt5e button.nt5e-pip.on-p { background: var(--nt-bad-bg); border-color: var(--nt-bad-border); }
 
 /* ---------- предложение ---------- */
-.nt5e-offer {
-  margin: 0; padding: 6px 10px;
-  font-style: italic;
-  background: #fff6d655;
-  border-left: 4px solid var(--nt-wax);
-}
-.nt5e-banner {
-  margin: 0; padding: 8px 12px;
-  font-weight: bold;
-  background: #d9a53a33;
-  border: 1.5px solid #a8741b;
-  border-radius: 3px;
-}
+.nt5e-offer { margin: 0; padding: 6px 10px; font-style: italic; background: var(--nt-soft-bg); border-left: 4px solid var(--nt-accent-border); }
+.nt5e-banner { margin: 0; padding: 8px 12px; font-weight: bold; background: var(--nt-banner-bg); border: 1.5px solid var(--nt-banner-border); border-radius: var(--nt-radius); }
 
 /* ---------- действия ---------- */
-.nt5e-actions fieldset {
-  margin: 0 0 8px;
-  padding: 6px 10px 4px;
-  border: 1.5px solid var(--nt-ink-soft);
-  border-radius: 4px;
-  background: #fff6d622;
-}
+.nt5e-actions fieldset { margin: 0 0 8px; padding: 6px 10px 4px; border: 1.5px solid var(--nt-line); border-radius: var(--nt-radius); background: var(--nt-soft-bg); }
 .nt5e-actions fieldset[disabled] { opacity: .45; }
-.nt5e-actions legend {
-  padding: 0 8px;
-  font-variant: small-caps;
-  font-size: 14px;
-  letter-spacing: 1px;
-  font-weight: bold;
-  color: var(--nt-wax-dark);
-}
-
-/* ---------- журнал ---------- */
-.nt5e-log { max-height: 150px; overflow-y: auto; }
-.nt5e-log-entry { padding: 3px 0; border-bottom: 1px dotted var(--nt-ink-soft); font-size: 12.5px; }
-.nt5e-log-entry:first-of-type { font-weight: bold; }
-
-/* ============================================================
-   Карточки в чате
-   ============================================================ */
-.nt5e-chat {
-  padding: 10px 12px;
-  color: var(--nt-ink);
-  font-family: var(--nt-font);
-  background:
-    radial-gradient(ellipse at 20% 10%, #fff6d655 0, transparent 50%),
-    linear-gradient(90deg, var(--nt-paper-dark), var(--nt-paper) 10%, var(--nt-paper) 90%, var(--nt-paper-dark));
-  border: 1px solid var(--nt-paper-edge);
-  border-top: 5px solid var(--nt-wood-light);
-  border-bottom: 5px solid var(--nt-wood-light);
-  border-radius: 3px;
-  box-shadow: inset 0 0 18px #8a5a2044;
-}
-.nt5e-chat h3 {
-  margin: 0 0 6px; padding: 0 0 3px;
-  font-family: var(--nt-font);
-  font-variant: small-caps;
-  font-size: 16px;
-  letter-spacing: .5px;
-  color: var(--nt-wax-dark);
-  border-bottom: 1px solid var(--nt-ink-soft);
-}
-.nt5e-chat p { margin: 3px 0; }
-.nt5e-chat blockquote {
-  margin: 4px 0; padding: 4px 10px;
-  font-style: italic;
-  border-left: 3px solid var(--nt-wax);
-  background: #fff6d655;
-}
-.nt5e-chat .nt5e-delta { font-size: 1.4em; font-weight: bold; color: var(--nt-wax-dark); }
-.nt5e-chat .nt5e-note { font-style: italic; color: var(--nt-ink-soft); }
-.nt5e-chat .nt5e-state { letter-spacing: 2px; }
-.nt5e-chat .nt5e-resolved { font-weight: bold; color: var(--nt-green); }
-.nt5e-chat button[data-nt5e-roll] {
-  width: 100%; height: 34px;
-  font-family: var(--nt-font); font-size: 14px; letter-spacing: .5px;
-  color: #f7e6c4;
-  background: radial-gradient(ellipse at 30% 30%, #b84a4a, var(--nt-wax) 60%, var(--nt-wax-dark));
-  border: 1px solid #3a0808;
-  border-radius: 4px;
-  box-shadow: 0 2px 5px #0008, inset 0 0 0 2px #ffffff18;
-  text-shadow: 0 1px 1px #0009;
-}
-.nt5e-chat button[data-nt5e-roll]:hover:not(:disabled) { box-shadow: 0 0 8px #b84a4a, inset 0 0 0 2px #ffffff22; }
-.nt5e-chat button[data-nt5e-roll]:disabled { opacity: .5; }
-
-/* ---------- placeholder и мелкий текст — тоже тёмные ---------- */
-.nt5e input::placeholder { color: #4a3018; opacity: 1; font-style: italic; }
-.nt5e-rows-head { color: var(--nt-ink); font-weight: 600; }
-.nt5e-dc, .nt5e-or { color: var(--nt-ink); }
-.nt5e-ladder button { opacity: 1; font-weight: 600; }
-.nt5e-ladder button span { font-size: 13px; }
-.nt5e-row .nt5e-name a { color: var(--nt-ink); }
-.nt5e-log-entry { font-size: 13px; color: var(--nt-ink); }
-.nt5e-chat, .nt5e-chat .nt5e-note { color: var(--nt-ink); }
-
-/* ---------- вкладки: разговоры и НПС ---------- */
-.nt5e-tabs { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-.nt5e-tab {
-  display: inline-flex; align-items: center; gap: 2px;
-  padding-right: 4px;
-  background: #fff6d655;
-  border: 1.5px solid var(--nt-ink-soft);
-  border-radius: 4px 4px 0 0;
-}
-.nt5e-tab > button {
-  color: var(--nt-ink); text-shadow: none; background: transparent; border: none; box-shadow: none;
-  font-weight: 600; height: 28px; padding: 0 8px;
-}
-.nt5e-tab > button small { margin-left: 6px; font-weight: 400; letter-spacing: 1px; color: var(--nt-wax-dark); }
-.nt5e-tab > a { color: var(--nt-ink); opacity: .6; font-size: 12px; }
-.nt5e-tab > a:hover { opacity: 1; color: var(--nt-wax); }
-.nt5e-tab.active { background: radial-gradient(ellipse at 30% 30%, #b84a4a, var(--nt-wax) 60%, var(--nt-wax-dark)); border-color: #3a0808; }
-.nt5e-tab.active > button, .nt5e-tab.active > a, .nt5e-tab.active > button small { color: #f7e6c4; opacity: 1; text-shadow: 0 1px 1px #0009; }
-.nt5e-npcs .nt5e-tab { border-radius: 14px; }
-.nt5e-npcs .nt5e-tab.active { background: radial-gradient(ellipse at 30% 30%, #6c9a3a, var(--nt-green) 60%, #213312); border-color: #213312; }
-.nt5e-npc-tab.nt5e-st-final { box-shadow: 0 0 0 2px #d9a53a; }
-.nt5e-npc-tab.nt5e-st-ended, .nt5e-npc-tab.nt5e-st-closed { opacity: .65; }
-.nt5e .nt5e-add { height: 28px; padding: 0 10px; font-size: 12.5px; }
-.nt5e-convs { border-bottom: 2px solid var(--nt-ink-soft); padding-bottom: 0; }
-.nt5e-conv-head { display: flex; }
-.nt5e-conv-head input { font-weight: 600; }
-
-/* ---------- цели аргумента ---------- */
+.nt5e-actions legend { padding: 0 8px; font-variant: var(--nt-head-variant); font-size: 14px; letter-spacing: var(--nt-head-spacing); font-weight: bold; color: var(--nt-heading); }
 .nt5e-targets { display: flex; flex-direction: column; gap: 4px; margin: 4px 0 8px; }
-.nt5e-target {
-  display: grid; grid-template-columns: 150px minmax(160px, 1fr) auto auto; gap: 10px; align-items: center;
-  padding: 3px 6px; border-bottom: 1px dotted var(--nt-ink-soft);
-}
+.nt5e-target { display: grid; grid-template-columns: 150px minmax(160px, 1fr) auto auto; gap: 10px; align-items: center; padding: 3px 6px; border-bottom: 1px dotted var(--nt-line); }
 .nt5e-target.inactive { opacity: .5; }
 .nt5e-target-name { font-size: 14px; font-variant: normal; }
 .nt5e-target select { width: 100%; }
 
-.nt5e-chat .nt5e-npc { margin-top: 6px; padding-top: 4px; border-top: 1px dotted var(--nt-ink-soft); }
+/* ---------- журнал ---------- */
+.nt5e-log { max-height: 150px; overflow-y: auto; }
+.nt5e-log-entry { padding: 3px 0; border-bottom: 1px dotted var(--nt-line); font-size: 13px; }
+
+/* ============================================================
+   Карточки в чате и окно броска
+   ============================================================ */
+.nt5e-chat {
+  padding: 10px 12px; color: var(--nt-ink); font-family: var(--nt-font);
+  background: var(--nt-chat-bg); border: var(--nt-chat-border);
+  border-top: 5px solid var(--nt-chat-frame); border-bottom: 5px solid var(--nt-chat-frame);
+  border-radius: var(--nt-radius);
+}
+.nt5e-chat h3 { margin: 0 0 6px; padding: 0 0 3px; font-family: var(--nt-font); font-variant: var(--nt-head-variant); font-size: 16px; letter-spacing: var(--nt-head-spacing); color: var(--nt-heading); border-bottom: 1px solid var(--nt-line); }
+.nt5e-chat p { margin: 3px 0; }
+.nt5e-chat blockquote { margin: 4px 0; padding: 4px 10px; font-style: italic; border-left: 3px solid var(--nt-accent-border); background: var(--nt-soft-bg); }
+.nt5e-chat .nt5e-delta { font-size: 1.4em; font-weight: bold; color: var(--nt-heading); }
+.nt5e-chat .nt5e-note { font-style: italic; color: var(--nt-ink); }
+.nt5e-chat .nt5e-state { letter-spacing: 2px; }
+.nt5e-chat .nt5e-resolved { font-weight: bold; color: var(--nt-heading); }
+.nt5e-chat .nt5e-npc { margin-top: 6px; padding-top: 4px; border-top: 1px dotted var(--nt-line); }
+.nt5e-chat button[data-nt5e-roll] {
+  width: 100%; height: 34px; font-family: var(--nt-font); font-size: 14px; letter-spacing: .5px;
+  color: var(--nt-accent-color); background: var(--nt-accent-bg); border: 1px solid var(--nt-accent-border);
+  border-radius: var(--nt-radius); box-shadow: 0 2px 5px #0008;
+}
+.nt5e-chat button[data-nt5e-roll]:hover:not(:disabled) { filter: brightness(1.12); }
+.nt5e-chat button[data-nt5e-roll]:disabled { opacity: .5; }
+.nt5e-pool p { margin: 2px 0; }
+
+/* ---------- киберпанк: срезанные углы и неоновая рамка ---------- */
+body.nt5e-skin-cyber .nt5e { clip-path: polygon(0 14px, 14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%); }
+body.nt5e-skin-cyber .nt5e::before {
+  content: "// NEGOTIATION.SYS"; display: block;
+  position: absolute; top: 6px; left: 22px; right: auto; bottom: auto; height: auto; border-radius: 0;
+  background: none; box-shadow: none; font-size: 11px; letter-spacing: 3px; color: #ff2a6d;
+}
+body.nt5e-skin-cyber .nt5e h4, body.nt5e-skin-cyber .nt5e-chat h3 { text-transform: uppercase; }
+body.nt5e-skin-cyber .nt5e button { text-transform: uppercase; letter-spacing: 1px; font-size: 12px; }
+body.nt5e-skin-cyber .nt5e-status { text-transform: uppercase; clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%); padding: 6px 16px; }
+body.nt5e-skin-cyber .nt5e-chat { border-left: 3px solid #05d9e8; text-shadow: 0 0 6px #05d9e855; }
+body.nt5e-skin-cyber .nt5e select option { background: #0a1120; color: #e2faff; }
+body.nt5e-skin-cyber .nt5e-ladder button.active, body.nt5e-skin-cyber .nt5e-tab.active { box-shadow: 0 0 10px #ff2a6d88; }
+
+/* ---------- офис: бланк документа ---------- */
+body.nt5e-skin-office .nt5e::before {
+  content: "NEGOTIATION RECORD · FORM NT-5"; display: block;
+  position: absolute; top: 0; left: 0; right: 0; bottom: auto; height: 22px; border-radius: 0;
+  background: #1e3a5f; box-shadow: none; color: #fff; font-size: 10.5px; letter-spacing: 2px; line-height: 22px; padding: 0 14px;
+}
+body.nt5e-skin-office .nt5e { padding-top: 38px; }
+body.nt5e-skin-office .nt5e h4 { text-transform: uppercase; font-size: 12.5px; text-align: left; border-bottom: 2px solid #1e3a5f; }
+body.nt5e-skin-office .nt5e-chat h3 { font-size: 14px; }
+body.nt5e-skin-office .nt5e-ladder button { background: #fff; }
+body.nt5e-skin-office .nt5e-offer { border-left-color: #1e3a5f; }
+body.nt5e-skin-office .nt5e-row { border-bottom: 1px solid #e2e8f0; }
