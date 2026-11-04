@@ -33,7 +33,6 @@
     "OnceHint": "A Motivation can be successfully appealed to only once.",
     "CurrentOffer": "Current offer",
     "Actor": "Character",
-    "DCLine": "Success DC {success} · Great success DC {great}",
     "MakeArgument": "Make an argument",
     "AppealsTo": "Appeals to",
     "Neither": "Neither a Motivation nor a Pitfall",
@@ -128,17 +127,18 @@
       "vengeance": "Vengeance"
     },
     "Settings": {
-      "dcSuccess": {
-        "name": "Success DC",
-        "hint": "Result at or above this counts as a success (draw-steel tier 2). Default 10."
-      },
-      "dcGreat": {
-        "name": "Great success DC",
-        "hint": "Result at or above this counts as a great success (draw-steel tier 3). Default 15."
-      },
       "publicChat": {
         "name": "Post results publicly",
         "hint": "If off, chat messages are whispered to the GM only."
+      },
+      "ruleset": {
+        "name": "Ruleset",
+        "hint": "Which game's checks and numbers to use. Auto picks by the world's game system; pick one manually to use another ruleset (e.g. OSR rules in an unlisted system).",
+        "auto": "Auto (by game system)"
+      },
+      "skin": {
+        "name": "Appearance",
+        "hint": "Look of the tracker window and the chat cards for everyone."
       }
     },
     "ArgText": "What the hero says (shown to players)",
@@ -171,6 +171,139 @@
       "positive": "“That's a fair point.”",
       "negative": "“I don't buy that.”",
       "impatient": "“I've heard that before.”"
-    }
+    },
+    "Ruleset": "Ruleset",
+    "SkinLabel": "Appearance",
+    "ManualMargin": "Margin (+/−)",
+    "RollFailed": "The roll failed — see the console (F12).",
+    "Skin": {
+      "fantasy": "Fantasy (scroll)",
+      "cyber": "Cyberpunk (terminal)",
+      "office": "Office (document)"
+    },
+    "Profile": {
+      "dnd5e": "D&D 5e",
+      "pf2e": "Pathfinder 2e",
+      "wfrp4e": "Warhammer Fantasy Roleplay 4e",
+      "vtm5e": "Vampire: The Masquerade 5e",
+      "osr": "OSR (Old School Essentials etc.)",
+      "drawsteel": "Draw Steel",
+      "generic": "Generic (d20)",
+      "cthulhu": "Call of Cthulhu 7e / Pulp Cthulhu"
+    },
+    "DC": {
+      "dc": {
+        "success": "Success DC",
+        "great": "Great success DC",
+        "hint": "Blank = the ruleset's default. The roll total is compared with these numbers."
+      },
+      "pool": {
+        "success": "Successes needed",
+        "great": "Successes for great",
+        "hint": "Blank = the ruleset's default. The number of successes is compared with these."
+      },
+      "under": {
+        "success": "",
+        "great": "Margin for great success",
+        "hint": "Blank = default. Success levels (WFRP) or points under the target (d20) needed for a great success."
+      },
+      "coc": {
+        "success": "",
+        "great": "Level for a great success",
+        "hint": "Blank = 1 (Hard success or better). 2 = Extreme, 3 = Critical."
+      }
+    },
+    "Dialog": {
+      "roll": "Roll",
+      "modifier": "Bonus from your sheet",
+      "adv": "Roll mode",
+      "advNormal": "Normal",
+      "advDis": "Disadvantage",
+      "edge": "Edges / banes",
+      "bane": "Bane (−2)",
+      "edgeOne": "Edge (+2)",
+      "doubleEdge": "Double edge (+1 tier)",
+      "doubleBane": "Double bane (−1 tier)",
+      "target": "Target",
+      "difficulty": "Difficulty modifier",
+      "pool": "Dice pool",
+      "hunger": "Hunger dice",
+      "crit": "Critical!",
+      "messy": "Messy critical",
+      "normalDice": "Dice",
+      "hungerDice": "Hunger",
+      "successes": "Successes",
+      "successesShort": "{n} succ.",
+      "skillValue": "Skill value",
+      "cocDice": "Bonus / penalty dice",
+      "coc": {
+        "pen2": "Two penalty dice",
+        "pen1": "One penalty die",
+        "bon1": "One bonus die",
+        "bon2": "Two bonus dice",
+        "fail": "Failure",
+        "regular": "Regular success",
+        "hard": "Hard success",
+        "extreme": "Extreme success",
+        "critical": "Critical success",
+        "fumble": "Fumble"
+      }
+    },
+    "Check": {
+      "pf2e": {
+        "diplomacy": "Diplomacy",
+        "intimidation": "Intimidation",
+        "deception": "Deception",
+        "performance": "Performance",
+        "society": "Society",
+        "perception": "Perception"
+      },
+      "wfrp4e": {
+        "charm": "Charm",
+        "gossip": "Gossip",
+        "haggle": "Haggle",
+        "intimidate": "Intimidate",
+        "leadership": "Leadership",
+        "bribery": "Bribery",
+        "intuition": "Intuition",
+        "perception": "Perception"
+      },
+      "vtm5e": {
+        "persuasion": "Persuasion",
+        "subterfuge": "Subterfuge",
+        "intimidation": "Intimidation",
+        "etiquette": "Etiquette",
+        "leadership": "Leadership",
+        "streetwise": "Streetwise",
+        "performance": "Performance",
+        "insight": "Insight"
+      },
+      "osr": {
+        "reaction": "Reaction roll (2d6 + CHA)",
+        "charisma": "Charisma check (d20, roll under)",
+        "wisdom": "Wisdom check (d20, roll under)"
+      },
+      "drawsteel": {
+        "presence": "Presence",
+        "reason": "Reason",
+        "intuition": "Intuition",
+        "might": "Might",
+        "agility": "Agility"
+      },
+      "generic": {
+        "persuasion": "Persuasion",
+        "deception": "Deception",
+        "intimidation": "Intimidation",
+        "insight": "Insight"
+      },
+      "cthulhu": {
+        "persuade": "Persuade",
+        "charm": "Charm",
+        "fastTalk": "Fast Talk",
+        "intimidate": "Intimidate",
+        "psychology": "Psychology"
+      }
+    },
+    "ManualLevel": "Level (0–3)"
   }
 }
